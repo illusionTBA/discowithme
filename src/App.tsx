@@ -375,14 +375,14 @@ function App() {
             </TabsContent>
           </Tabs>
         ) : (
-          <div className="flex flex-row items-center justify-center gap-2 w-full">
+          <div className="flex md:flex-row flex-col items-center justify-center gap-2 w-full">
             <Input
               placeholder="Webhook URL"
               value={temp}
-              className="w-2/12 p-2"
+              className="md:w-2/12 w-11/12 p-2"
               onChange={(e) => setTemp(e.target.value)}
             />
-            <Button onClick={checkWebhook}>
+            <Button onClick={checkWebhook} className="w-11/12 md:w-fit">
               <Check className="w-4 h-4" />
             </Button>
           </div>
