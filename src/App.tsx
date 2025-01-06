@@ -146,7 +146,7 @@ function App() {
         </p>
 
         {webhook.length > 0 ? (
-          <Tabs defaultValue="info" className="w-11/12 md:5/12 p-2">
+          <Tabs defaultValue="info" className="sm:w-auto md:w-5/12 w-10/12 p-2">
             <TabsList className="flex flex-row items-center justify-center gap-2 bg-muted/10">
               <TabsTrigger
                 value="info"
