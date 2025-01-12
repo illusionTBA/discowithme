@@ -25,12 +25,18 @@ function App() {
 
   const [spamInterval, setSpamInterval] = useState<NodeJS.Timeout>();
   const checkWebhook = async () => {
-    if (!temp.startsWith("https://discord.com/api/webhooks/")) {
+    let t = temp;
+    // if (!temp.startsWith("https://discord.com/api/webhooks/")) {
+    if (!/discord(app)?\.com\/api\/webhooks\//.test(t)) {
       toast.error("Invalid webhook");
       return;
     }
 
-    const res = await fetch(temp);
+    if (!t.startsWith("http")) {
+      t = `https://${t}`;
+    }
+
+    const res = await fetch(t);
     if (res.status !== 200) {
       toast.error(`Invalid webhook: ${res.status}`);
       return;
@@ -39,7 +45,7 @@ function App() {
     const data = await res.json();
     setWebhookInfo(data);
     toast.success("Valid webhook");
-    setWebhook(temp);
+    setWebhook(t);
     setTemp("");
   };
 
