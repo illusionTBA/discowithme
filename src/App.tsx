@@ -26,8 +26,14 @@ function App() {
   const [spamInterval, setSpamInterval] = useState<NodeJS.Timeout>();
   const checkWebhook = async () => {
     let t = temp;
-    // if (!temp.startsWith("https://discord.com/api/webhooks/")) {
-    if (!/discord(app)?\.com\/api\/webhooks\//.test(t)) {
+    // checks for all valid discord webhooks links
+    // https://discord.com/api/webhooks/../..
+    // https://discordapp.com/api/webhooks/../..
+    // https://canary.discord.com/api/webhooks/../..
+    // https://canary.discordapp.com/api/webhooks/../..
+    // https://ptb.discord.com/api/webhooks/../..
+    // https://ptb.discordapp.com/api/webhooks/../..
+    if (!/https:\/\/(ptb|canary)\.(discord|discordapp)\.com\/api\/webhooks\//.test(t)) {
       toast.error("Invalid webhook");
       return;
     }
