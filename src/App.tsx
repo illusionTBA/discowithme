@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Info, Skull, Bot, NotebookPen } from "lucide-react";
 import { Input } from "./components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
 import { Check, Pause } from "lucide-react";
 import { toast } from "sonner";
@@ -24,9 +24,35 @@ function App() {
   const [isSpamming, setIsSpamming] = useState(false);
 
   const [spamInterval, setSpamInterval] = useState<NodeJS.Timeout>();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    let webhook = params.get("webhook");
+    if (!webhook) return;
+    if (!/discord(app)?\.com\/api\/webhooks\//.test(webhook)) {
+      toast.error("Invalid webhook");
+      return;
+    }
+    (async () => {
+      if (!webhook.startsWith("http")) {
+        webhook = `https://${webhook}`;
+      }
+      const res = await fetch(webhook);
+      if (res.status !== 200) {
+        toast.error(`Invalid webhook: ${res.status}`);
+        return;
+      }
+
+      const data = await res.json();
+      setWebhookInfo(data);
+      toast.success("Valid webhook");
+      setWebhook(webhook);
+      setTemp("");
+    })();
+  }, []);
+
   const checkWebhook = async () => {
     let t = temp;
-    // if (!temp.startsWith("https://discord.com/api/webhooks/")) {
     if (!/discord(app)?\.com\/api\/webhooks\//.test(t)) {
       toast.error("Invalid webhook");
       return;
