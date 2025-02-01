@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Info, Skull, Bot, NotebookPen } from "lucide-react";
 import { Input } from "./components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
 import { Check, Pause } from "lucide-react";
 import { toast } from "sonner";
@@ -24,13 +24,45 @@ function App() {
   const [isSpamming, setIsSpamming] = useState(false);
 
   const [spamInterval, setSpamInterval] = useState<NodeJS.Timeout>();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    let webhook = params.get("webhook");
+    if (!webhook) return;
+    if (!/discord(app)?\.com\/api\/webhooks\//.test(webhook)) {
+      toast.error("Invalid webhook");
+      return;
+    }
+    (async () => {
+      if (!webhook.startsWith("http")) {
+        webhook = `https://${webhook}`;
+      }
+      const res = await fetch(webhook);
+      if (res.status !== 200) {
+        toast.error(`Invalid webhook: ${res.status}`);
+        return;
+      }
+
+      const data = await res.json();
+      setWebhookInfo(data);
+      toast.success("Valid webhook");
+      setWebhook(webhook);
+      setTemp("");
+    })();
+  }, []);
+
   const checkWebhook = async () => {
-    if (!temp.startsWith("https://discord.com/api/webhooks/")) {
+    let t = temp;
+    if (!/discord(app)?\.com\/api\/webhooks\//.test(t)) {
       toast.error("Invalid webhook");
       return;
     }
 
-    const res = await fetch(temp);
+    if (!t.startsWith("http")) {
+      t = `https://${t}`;
+    }
+
+    const res = await fetch(t);
     if (res.status !== 200) {
       toast.error(`Invalid webhook: ${res.status}`);
       return;
@@ -39,7 +71,7 @@ function App() {
     const data = await res.json();
     setWebhookInfo(data);
     toast.success("Valid webhook");
-    setWebhook(temp);
+    setWebhook(t);
     setTemp("");
   };
 
@@ -388,6 +420,18 @@ function App() {
           </div>
         )}
       </div>
+
+      <footer className="flex items-center justify-center h-12 fixed w-full bottom-0 ">
+        <p>
+          Made with ❤️ by{" "}
+          <a
+            href="https://github.com/illusionTBA/discowithme"
+            className="text-primary underline"
+          >
+            illusionTBA
+          </a>
+        </p>
+      </footer>
     </>
   );
 }
