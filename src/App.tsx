@@ -420,6 +420,18 @@ function App() {
           </div>
         )}
       </div>
+
+      <footer className="flex items-center justify-center h-12 fixed w-full bottom-0 ">
+        <p>
+          Made with ❤️ by{" "}
+          <a
+            href="https://github.com/illusionTBA/discowithme"
+            className="text-primary underline"
+          >
+            illusionTBA
+          </a>
+        </p>
+      </footer>
     </>
   );
 }
