@@ -413,8 +413,13 @@ function App() {
               value={temp}
               className="md:w-2/12 w-11/12 p-2"
               onChange={(e) => setTemp(e.target.value)}
+              aria-label="Webhook URL Input"
             />
-            <Button onClick={checkWebhook} className="w-11/12 md:w-fit">
+            <Button
+              onClick={checkWebhook}
+              className="w-11/12 md:w-fit"
+              aria-label="Check Webhook Button"
+            >
               <Check className="w-4 h-4" />
             </Button>
           </div>
