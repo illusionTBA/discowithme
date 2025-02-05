@@ -20,6 +20,7 @@ export type Message = {
   username: string;
   avatar_url: string;
   embeds?: Embed[];
+  tts?: boolean;
 };
 
 export type Embed = {
