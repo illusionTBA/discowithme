@@ -52,6 +52,17 @@ function App() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (isSpamming) {
+      clearInterval(spamInterval);
+      const interval = setInterval(async () => {
+        await sendMessage({ ...message, tts: isTTS });
+        console.log("sent");
+      }, delay);
+      setSpamInterval(interval);
+    }
+  }, [isTTS]);
+
   const checkWebhook = async () => {
     let t = temp;
     if (!/discord(app)?\.com\/api\/webhooks\//.test(t)) {
