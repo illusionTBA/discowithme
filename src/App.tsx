@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Info, Skull, Bot, NotebookPen } from "lucide-react";
+import { Info, Skull, Bot, NotebookPen, Volume2 } from "lucide-react";
 import { Input } from "./components/ui/input";
 import { useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
@@ -22,6 +22,7 @@ function App() {
   const [editWebhook, setEditWebhook] = useState<ModifyWebhook>();
   const [delay, setDelay] = useState(1000);
   const [isSpamming, setIsSpamming] = useState(false);
+  const [isTTS, setIsTTS] = useState(false);
 
   const [spamInterval, setSpamInterval] = useState<NodeJS.Timeout>();
 
@@ -100,7 +101,7 @@ function App() {
     if (!webhookInfo) return;
     setIsSpamming(true);
     const interval = setInterval(async () => {
-      await sendMessage(message);
+      await sendMessage({ ...message, tts: isTTS });
       console.log("sent");
     }, delay);
     setSpamInterval(interval);
@@ -119,6 +120,7 @@ function App() {
         username: data.username,
         avatar_url: data.avatar_url,
         embeds: data.embeds,
+        tts: data.tts,
         allowed_mentions: {
           parse: ["users", "roles", "everyone"],
         },
@@ -334,6 +336,16 @@ function App() {
                     onChange={(e) => setDelay(parseInt(e.target.value))}
                     className="w-6/12 p-2"
                   />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    onClick={() => setIsTTS(!isTTS)}
+                    variant={isTTS ? "default" : "secondary"}
+                    className="space-x-2 flex"
+                  >
+                    <Volume2 className="w-4 h-4" />
+                    {isTTS ? "TTS On" : "TTS Off"}
+                  </Button>
                 </div>
                 {isSpamming ? (
                   <Button
