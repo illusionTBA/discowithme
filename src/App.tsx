@@ -1,4 +1,4 @@
-import { Info, Skull, Bot, NotebookPen, Volume2 } from "lucide-react";
+import { Skull, Bot, Volume2 } from "lucide-react";
 import { Input } from "./components/ui/input";
 import { useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
