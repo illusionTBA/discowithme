@@ -357,7 +357,7 @@ function App() {
                   placeholder="Name"
                   value={editWebhook?.name ?? ""}
                   onChange={(e) =>
-                    setEditWebhook({ ...editWebhook, name: e.target.value })
+                    setEditWebhook({ ...editWebhook, name: e.target.value, avatar: editWebhook?.avatar ?? "" })
                   }
                   className="w-full bg-[#161616]"
                 />
@@ -367,7 +367,7 @@ function App() {
                     if (!e.target.files) return;
                     const file = e.target.files[0];
                     toBase64(file).then((base64) => {
-                      setEditWebhook({ ...editWebhook, avatar: base64 });
+                      setEditWebhook({ ...editWebhook, avatar: base64 as string, name: editWebhook?.name ?? "" });
                     });
                   }}
                   type="file"
