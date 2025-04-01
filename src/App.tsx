@@ -1,5 +1,4 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Info, Skull, Bot, NotebookPen, Volume2 } from "lucide-react";
+import { Skull, Bot, Volume2 } from "lucide-react";
 import { Input } from "./components/ui/input";
 import { useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
@@ -10,6 +9,7 @@ import type {
   Message as MessageType,
   ModifyWebhook,
 } from "./types";
+
 function App() {
   const [webhook, setWebhook] = useState("");
   const [temp, setTemp] = useState("");
@@ -23,6 +23,7 @@ function App() {
   const [delay, setDelay] = useState(1000);
   const [isSpamming, setIsSpamming] = useState(false);
   const [isTTS, setIsTTS] = useState(false);
+  const [activeTab, setActiveTab] = useState("info");
 
   const [spamInterval, setSpamInterval] = useState<NodeJS.Timeout>();
 
@@ -183,63 +184,60 @@ function App() {
     });
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-screen space-y-2">
-        <h1 className="text-3xl font-bold">Disco With Me 🕺</h1>
-        <p className="text-center">
+      <div className="flex flex-col items-center justify-center h-screen space-y-6">
+        <h1 className="text-4xl font-bold">Disco With Me 🕺</h1>
+        <p className="text-center text-lg">
           No data is <span className="font-bold">EVER</span> stored or sent to
           some random server.
         </p>
 
         {webhook.length > 0 ? (
-          <Tabs defaultValue="info" className="sm:w-auto md:w-5/12 w-10/12 p-2">
-            <TabsList className="flex flex-row items-center justify-center gap-2 bg-muted/10">
-              <TabsTrigger
-                value="info"
-                className="flex flex-row items-center justify-center gap-1"
+          <div className="w-full max-w-2xl p-6 bg-[#0e0e0e] rounded-lg">
+            <div className="flex justify-around bg-[#0e0e0e] p-3 rounded-lg mb-4">
+              <Button
+                onClick={() => setActiveTab("info")}
+                className={`flex items-center gap-2 px-4 py-2 rounded ${
+                  activeTab === "info" ? "bg-[#161616] text-white" : "bg-[#161616]"
+                }`}
               >
-                <Info className="w-4 h-4" /> Info
-              </TabsTrigger>
-              <TabsTrigger
-                value="delete"
-                className="flex flex-row items-center justify-center gap-1"
+                Info
+              </Button>
+              <Button
+                onClick={() => setActiveTab("spam")}
+                className={`flex items-center gap-2 px-4 py-2 rounded ${
+                  activeTab === "spam" ? "bg-[#161616] text-white" : "bg-[#161616]"
+                }`}
               >
-                <Skull className="w-4 h-4" />
-                Delete
-              </TabsTrigger>
-              <TabsTrigger
-                value="spam"
-                className="flex flex-row items-center justify-center gap-1"
+                 Main
+              </Button>
+              <Button
+                onClick={() => setActiveTab("edit")}
+                className={`flex items-center gap-2 px-4 py-2 rounded ${
+                  activeTab === "edit" ? "bg-[#161616] text-white" : "bg-[#161616]"
+                }`}
               >
-                <Bot className="w-4 h-4" />
-                Spam
-              </TabsTrigger>
-              <TabsTrigger
-                value="edit"
-                className="flex flex-row items-center justify-center gap-1"
-              >
-                <NotebookPen className="w-4 h-4" />
                 Edit
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="info" className="bg-muted/10">
-              {/* display webhook info */}
-              <div className="flex flex-col items-center justify-center gap-2 w-full h-full">
-                <div className="flex flex-col justify-center gap-2 w-11/12 p-2 text-left ">
-                  <p className="text-left">
-                    Name:{" "}
+              </Button>
+            </div>
+            {activeTab === "info" && (
+              <div className="bg-[#0e0e0e] p-4 rounded-lg">
+                {/* display webhook info */}
+                <div className="flex flex-col gap-3">
+                  <p>
+                    <span className="font-bold">Name:</span>{" "}
                     <code
-                      className="font-bold cursor-pointer"
+                      className="cursor-pointer"
                       onClick={() => copy(webhookInfo?.name ?? "")}
                     >
                       {webhookInfo?.name}
                     </code>
                   </p>
-                  <p className="text-left flex space-x-1">
-                    <span>Avatar:</span>
+                  <p className="flex items-center gap-3">
+                    <span className="font-bold">Avatar:</span>
                     {webhookInfo?.avatar ? (
                       <img
                         src={`https://cdn.discordapp.com/avatars/${webhookInfo?.id}/${webhookInfo?.avatar}.webp?size=80`}
-                        className="w-7 h-7 rounded-full cursor-pointer"
+                        className="w-10 h-10 rounded-full cursor-pointer"
                         onClick={() =>
                           copy(
                             `https://cdn.discordapp.com/avatars/${webhookInfo?.id}/${webhookInfo?.avatar}.webp?size=4096`
@@ -248,40 +246,31 @@ function App() {
                         alt="No avatar"
                       />
                     ) : (
-                      <span className="text-muted">No avatar</span>
+                      <span className="">No avatar</span>
                     )}
                   </p>
-                  <p className="text-left">
-                    ID:{" "}
+                  <p>
+                    <span className="font-bold">ID:</span>{" "}
                     <code
-                      className="font-bold cursor-pointer"
+                      className="cursor-pointer"
                       onClick={() => copy(webhookInfo?.id ?? "")}
                     >
                       {webhookInfo?.id}
                     </code>
                   </p>
-                  <p className="text-left flex space-x-1">
-                    <span>token:</span>
+                  <p>
+                    <span className="font-bold">Channel ID:</span>{" "}
                     <code
-                      className="font-bold cursor-pointer min-w-full max-w-full text-ellipsis text-xs"
-                      onClick={() => copy(webhookInfo?.token ?? "")}
-                    >
-                      {webhookInfo?.token}
-                    </code>
-                  </p>
-                  <p className="text-left flex space-x-1">
-                    <span>Channel ID:</span>
-                    <code
-                      className="font-bold cursor-pointer"
+                      className="cursor-pointer"
                       onClick={() => copy(webhookInfo?.channel_id ?? "")}
                     >
                       {webhookInfo?.channel_id}
                     </code>
                   </p>
-                  <p className="text-left flex space-x-1">
-                    <span>Guild ID:</span>
+                  <p>
+                    <span className="font-bold">Guild ID:</span>{" "}
                     <code
-                      className="font-bold cursor-pointer"
+                      className="cursor-pointer"
                       onClick={() => copy(webhookInfo?.guild_id ?? "")}
                     >
                       {webhookInfo?.guild_id}
@@ -289,75 +278,48 @@ function App() {
                   </p>
                 </div>
               </div>
-            </TabsContent>
-            <TabsContent value="delete" className="h-full">
-              <div className="flex flex-col items-center justify-center bg-muted/10 h-full w-full ">
+            )}
+            {activeTab === "spam" && (
+              <div className="bg-[#0e0e0e] p-4 rounded-lg flex flex-col gap-4">
+                <Input
+                  placeholder="Message to spam"
+                  value={message.content}
+                  onChange={(e) =>
+                    setMessage({ ...message, content: e.target.value })
+                  }
+                  className="w-full bg-[#161616]"
+                />
+                <Input
+                  placeholder="Username"
+                  value={message.username}
+                  onChange={(e) =>
+                    setMessage({ ...message, username: e.target.value })
+                  }
+                  className="w-full bg-[#161616]"
+                />
+                <Input
+                  placeholder="Avatar URL"
+                  value={message.avatar_url}
+                  onChange={(e) =>
+                    setMessage({ ...message, avatar_url: e.target.value })
+                  }
+                  className="w-full bg-[#161616]"
+                />
+                <Input
+                  placeholder="Delay (ms)"
+                  onChange={(e) => setDelay(parseInt(e.target.value))}
+                  className="w-full bg-[#161616]"
+                />
                 <Button
-                  onClick={deleteWebhook}
-                  variant={"destructive"}
-                  className="space-x-2 flex"
+                  onClick={() => setIsTTS(!isTTS)}
+                  variant={isTTS ? "default" : "outline"}
+                  className={`flex items-center gap-2 ${
+                    isTTS ? "bg-white text-black" : "bg-[#161616] text-gray-400"
+                  }`}
                 >
-                  <Skull className="w-4 h-4" />
-                  Delete
+                  <Volume2 className="w-5 h-5" />
+                  {isTTS ? "TTS On" : "TTS Off"}
                 </Button>
-              </div>
-            </TabsContent>
-            <TabsContent value="spam" className="h-full">
-              <div className="flex flex-col items-center justify-center bg-muted/10 h-full w-full space-y-2">
-                <div className="flex flex-col space-y-2 items-center justify-center w-full">
-                  <h2>Message to spam</h2>
-                  <Input
-                    placeholder="Message to spam"
-                    value={message.content}
-                    onChange={(e) =>
-                      setMessage({ ...message, content: e.target.value })
-                    }
-                    className="w-6/12 p-2"
-                  />
-                </div>
-
-                <div className="w-full flex justify-center items-center">
-                  <div className="flex flex-col justify-center items-center space-y-2 w-full">
-                    <h2>Username</h2>
-                    <Input
-                      placeholder="Username"
-                      value={message.username}
-                      onChange={(e) =>
-                        setMessage({ ...message, username: e.target.value })
-                      }
-                      className="w-9/12 p-2"
-                    />
-                  </div>
-                  <div className="flex flex-col justify-center items-center space-y-2 w-full">
-                    <h2>Avatar URL</h2>
-                    <Input
-                      placeholder="Avatar URL"
-                      value={message.avatar_url}
-                      onChange={(e) =>
-                        setMessage({ ...message, avatar_url: e.target.value })
-                      }
-                      className="w-9/12 p-2"
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col items-center justify-center w-full">
-                  <h2>Delay (ms)</h2>
-                  <Input
-                    placeholder="Delay"
-                    onChange={(e) => setDelay(parseInt(e.target.value))}
-                    className="w-6/12 p-2"
-                  />
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    onClick={() => setIsTTS(!isTTS)}
-                    variant={isTTS ? "default" : "secondary"}
-                    className="space-x-2 flex"
-                  >
-                    <Volume2 className="w-4 h-4" />
-                    {isTTS ? "TTS On" : "TTS Off"}
-                  </Button>
-                </div>
                 {isSpamming ? (
                   <Button
                     onClick={() => {
@@ -367,94 +329,87 @@ function App() {
                       toast.info("Spam stopped");
                     }}
                     variant={"secondary"}
-                    className="space-x-2 flex"
+                    className="flex items-center gap-2 bg-[#161616]"
                   >
-                    <Pause className="w-4 h-4" />
-                    Stop
+                    <Pause className="w-5 h-5" /> Stop
                   </Button>
                 ) : (
                   <Button
                     onClick={spam}
-                    variant={"secondary"}
-                    className="space-x-2 flex"
+                    variant={"outline"}
+                    className="flex items-center gap-2 bg-white text-black"
                   >
-                    <Bot className="w-4 h-4" />
-                    Start
+                    <Bot className="w-5 h-5" /> Start
                   </Button>
                 )}
+                <Button
+                  onClick={deleteWebhook}
+                  variant={"destructive"}
+                  className="flex items-center text-white gap-2 bg-[#b91c1c]"
+                >
+                  <Skull className="w-5 h-5" /> Delete
+                </Button>
               </div>
-            </TabsContent>
-            <TabsContent value="edit" className="h-full">
-              <div className="flex flex-col items-center justify-center bg-muted/10 h-full w-full space-y-2">
-                <div className="flex flex-col space-y-2 items-center justify-center w-full">
-                  <h2>Name</h2>
-                  <Input
-                    placeholder="Name"
-                    value={editWebhook?.name ?? ""}
-                    onChange={(e) =>
-                      // @ts-expect-error ts tragic
-                      setEditWebhook({ ...editWebhook, name: e.target.value })
-                    }
-                    className="w-9/12 p-2"
-                  />
-                </div>
-                <div className="flex flex-col space-y-2 items-center justify-center w-full">
-                  <h2>Avatar</h2>
-                  <Input
-                    placeholder="Avatar URL"
-                    onChange={(e) => {
-                      // get file from input
-                      if (!e.target.files) return;
-                      const file = e.target.files[0];
-                      // convert to base64
-                      console.log(file);
-                      toBase64(file).then((base64) => {
-                        // @ts-expect-error ts tragic
-                        setEditWebhook({ ...editWebhook, avatar: base64 });
-                      });
-                    }}
-                    type="file"
-                    className="w-9/12 p-2"
-                  />
-                </div>
-
+            )}
+            {activeTab === "edit" && (
+              <div className="bg-[#0e0e0e] p-4 rounded-lg flex flex-col gap-4">
+                <Input
+                  placeholder="Name"
+                  value={editWebhook?.name ?? ""}
+                  onChange={(e) =>
+                    setEditWebhook({ ...editWebhook, name: e.target.value, avatar: editWebhook?.avatar ?? "" })
+                  }
+                  className="w-full bg-[#161616]"
+                />
+                <Input
+                  placeholder="Avatar URL"
+                  onChange={(e) => {
+                    if (!e.target.files) return;
+                    const file = e.target.files[0];
+                    toBase64(file).then((base64) => {
+                      setEditWebhook({ ...editWebhook, avatar: base64 as string, name: editWebhook?.name ?? "" });
+                    });
+                  }}
+                  type="file"
+                  className="w-full bg-[#161616]"
+                />
                 <Button
                   onClick={modifyWebhook}
                   variant={"secondary"}
-                  className="space-x-2 flex"
+                  className="flex items-center gap-2 bg-[#161616]"
                 >
-                  <Check className="w-4 h-4" />
-                  Save
+                  <Check className="w-5 h-5" /> Save
                 </Button>
               </div>
-            </TabsContent>
-          </Tabs>
+            )}
+          </div>
         ) : (
-          <div className="flex md:flex-row flex-col items-center justify-center gap-2 w-full">
+          <div className="flex flex-col items-center gap-4 w-full max-w-md">
             <Input
               placeholder="Webhook URL"
               value={temp}
-              className="md:w-2/12 w-11/12 p-2"
+              className="w-full bg-[#161616]"
               onChange={(e) => setTemp(e.target.value)}
               aria-label="Webhook URL Input"
             />
             <Button
               onClick={checkWebhook}
-              className="w-11/12 md:w-fit"
+              className="w-full bg-[#cccccc] text-black"
               aria-label="Check Webhook Button"
+              variant={"outline"}
             >
-              <Check className="w-4 h-4" />
+              <Check className="w-5 h-5" />
             </Button>
           </div>
         )}
       </div>
 
-      <footer className="flex items-center justify-center h-12 fixed w-full bottom-0 ">
+      <footer className="flex items-center justify-center h-12 fixed w-full bottom-0 bg-muted/10">
         <p>
           Made with ❤️ by{" "}
           <a
             href="https://github.com/illusionTBA/discowithme"
-            className="text-primary underline"
+            className="underline"
           >
             illusionTBA
           </a>
