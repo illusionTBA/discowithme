@@ -1,5 +1,5 @@
 # End of Support
-DiscoWithMe is now depricated. Use this [webhook-multiooo](https://webhook.uncoverit.org/) instead.
+DiscoWithMe is now depricated. Use this [webhook-multiool](https://webhook.uncoverit.org/) instead.
 
 # Self-hosting
 First, clone the repository:
